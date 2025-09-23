@@ -1,8 +1,8 @@
-"""Department & Position  tables migration
+"""Migrated positions & departments tables into db
 
-Revision ID: 612f0bef5470
+Revision ID: a6c0c5aa7864
 Revises: 
-Create Date: 2025-09-22 19:04:06.064936
+Create Date: 2025-09-23 21:57:34.911007
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '612f0bef5470'
+revision: str = 'a6c0c5aa7864'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,7 +26,8 @@ def upgrade() -> None:
     sa.Column('name', sa.String(length=64), nullable=False),
     sa.Column('code', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('code')
+    sa.UniqueConstraint('code'),
+    sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_departments_id'), 'departments', ['id'], unique=False)
     op.create_table('positions',

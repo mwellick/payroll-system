@@ -1,8 +1,8 @@
-"""Employee table migration
+"""Migrated employees tables into db
 
-Revision ID: 969f35c069af
-Revises: 612f0bef5470
-Create Date: 2025-09-22 19:07:20.785475
+Revision ID: 379d786d98ee
+Revises: a6c0c5aa7864
+Create Date: 2025-09-23 21:57:56.155210
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '969f35c069af'
-down_revision: Union[str, Sequence[str], None] = '612f0bef5470'
+revision: str = '379d786d98ee'
+down_revision: Union[str, Sequence[str], None] = 'a6c0c5aa7864'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -33,9 +33,9 @@ def upgrade() -> None:
     sa.Column('passport_issued_by', sa.String(length=255), nullable=False),
     sa.Column('passport_issued_day', sa.Date(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('department_id', sa.Integer(), nullable=False),
+    sa.Column('department_id', sa.Integer(), nullable=True),
     sa.Column('position_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
+    sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ondelete='SET NULL'),
     sa.ForeignKeyConstraint(['position_id'], ['positions.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('tab_number')
