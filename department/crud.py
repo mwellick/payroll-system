@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from sqlalchemy import select
 from starlette import status
 from database.models import Department
 from .schemas import DepartmentCreated
@@ -8,8 +9,13 @@ def check_department_exists(department_id, db):
     """
     This function checks if specific department exists
     """
-    department_instance = db.query(Department).filter(
-        Department.id == department_id).first()
+    query = select(Department).filter(
+        Department.id == department_id)
+
+    result = db.execute(query)
+
+    department_instance = result.scalars().first()
+
     if not department_instance:
         raise HTTPException(
             detail="Departments not found",
@@ -28,23 +34,17 @@ def department_create(db, department):
     db.commit()
     db.refresh(department_instance)
 
-    return DepartmentCreated(
-        id=department_instance.id,
-        name=department_instance.name,
-        code=department_instance.code,
-        head_id=department_instance.head_id
-    )
+    return DepartmentCreated.model_validate(department_instance)
 
 
 def get_list_departments(db):
-    departments = db.query(Department).order_by(Department.id).all()
-    return departments
+    query = select(Department).order_by(Department.id)
+    result = db.execute(query)
+    return result.scalars().all()
 
 
 def department_update(department_id, db, department):
-    department_instance = db.query(Department).filter(
-        Department.id == department_id).first()
-    check_department_exists(department_id, db)
+    department_instance = check_department_exists(department_id, db)
 
     update_data = department.model_dump(exclude_unset=True)
 
@@ -58,8 +58,7 @@ def department_update(department_id, db, department):
 
 
 def department_delete(department_id, db):
-    department_instance = db.query(Department).filter(Department.id == department_id).first()
-    check_department_exists(department_id, db)
+    department_instance = check_department_exists(department_id, db)
 
     db.delete(department_instance)
     db.commit()

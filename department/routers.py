@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from starlette import status
 from dependencies import db_dependency
-from .schemas import DepartmentCreate, DepartmentList, UpdateDepartment
+from .schemas import DepartmentCreate, DepartmentList, DepartmentUpdate
 from .crud import (
     department_create,
     get_list_departments,
@@ -25,7 +25,7 @@ def list_departments(db: db_dependency):
 
 
 @departments_router.patch("/{department_id}/update", status_code=status.HTTP_200_OK)
-def update_department(department_id: int, db: db_dependency, department: UpdateDepartment):
+def update_department(department_id: int, db: db_dependency, department: DepartmentUpdate):
     department_instance = department_update(department_id, db, department)
     return department_instance
 

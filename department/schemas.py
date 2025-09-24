@@ -13,6 +13,9 @@ class DepartmentCreated(BaseModel):
     code: int
     head_id: int | None
 
+    class Config:
+        from_attributes = True
+
 
 class DepartmentList(BaseModel):
     id: int
@@ -24,6 +27,6 @@ class DepartmentList(BaseModel):
         from_attributes = True
 
 
-class UpdateDepartment(BaseModel):
+class DepartmentUpdate(BaseModel):
     name: str | None = None
     head_id: int | None
