@@ -21,4 +21,4 @@ class DepartmentList(DepartmentCreated):
 
 class DepartmentUpdate(BaseModel):
     name: str | None = None
-    head_id: int | None
+    head_id: int | None = None
