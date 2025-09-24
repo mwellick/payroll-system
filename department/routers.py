@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Path
 from starlette import status
 from dependencies import db_dependency
 from .schemas import DepartmentCreate, DepartmentList, DepartmentUpdate
@@ -25,12 +25,19 @@ def list_departments(db: db_dependency):
 
 
 @departments_router.patch("/{department_id}/update", status_code=status.HTTP_200_OK)
-def update_department(department_id: int, db: db_dependency, department: DepartmentUpdate):
+def update_department(
+        db: db_dependency,
+        department: DepartmentUpdate,
+        department_id: int = Path(..., gt=0),
+):
     department_instance = department_update(department_id, db, department)
     return department_instance
 
 
 @departments_router.delete("/{department_id}/delete", status_code=status.HTTP_204_NO_CONTENT)
-def delete_department(department_id: int, db: db_dependency):
+def delete_department(
+        db: db_dependency,
+        department_id: int = Path(..., gt=0),
+):
     department_delete(department_id, db)
     return
