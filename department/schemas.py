@@ -20,8 +20,10 @@ class DepartmentList(BaseModel):
     code: int
     head_id: int | None
 
+    class Config:
+        from_attributes = True
+
 
 class UpdateDepartment(BaseModel):
     name: str | None = None
-    code: int | None = None
     head_id: int | None
