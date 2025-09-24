@@ -7,22 +7,14 @@ class DepartmentCreate(BaseModel):
     head_id: int | None
 
 
-class DepartmentCreated(BaseModel):
+class DepartmentCreated(DepartmentCreate):
     id: int
-    name: str
-    code: int
-    head_id: int | None
 
     class Config:
         from_attributes = True
 
 
-class DepartmentList(BaseModel):
-    id: int
-    name: str
-    code: int
-    head_id: int | None
-
+class DepartmentList(DepartmentCreated):
     class Config:
         from_attributes = True
 

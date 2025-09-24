@@ -6,24 +6,18 @@ class PositionCreate(BaseModel):
     hourly_rate: float = Field(gt=0)
 
 
-class PositionCreated(BaseModel):
+class PositionCreated(PositionCreate):
     id: int
-    name: str
-    hourly_rate: float
 
     class Config:
         from_attributes = True
 
 
-class PositionList(BaseModel):
-    id: int
-    name: str
-    hourly_rate: float
-
+class PositionList(PositionCreated):
     class Config:
         from_attributes = True
 
 
 class PositionUpdate(BaseModel):
-    name: str
-    hourly_rate: float
+    name: str | None = None
+    hourly_rate: float | None = None
