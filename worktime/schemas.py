@@ -23,7 +23,6 @@ class WorkTimeList(WorkTimeCreate):
 
 
 class WorkTimeUpdate(BaseModel):
-    employee_id: int | None = Field(default=None, gt=0)
     work_date: date | None = Field(default=None, le=date.today())
     hours_worked: int | None = Field(default=None, gt=0)
     is_weekend: bool | None = None

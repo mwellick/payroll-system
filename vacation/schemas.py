@@ -24,7 +24,6 @@ class VacationList(VacationCreated):
 
 
 class VacationUpdate(BaseModel):
-    employee_id: int | None = Field(default=None, gt=0)
     start_date: date | None = None
     end_date: date | None = None
     total_days: int | None = Field(default=None, gt=0)

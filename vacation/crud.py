@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from starlette import status
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 from database.models import Vacation, Employee
 from .schemas import VacationCreated

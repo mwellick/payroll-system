@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from database.models import WorkTime, Employee
+from sqlalchemy.orm import joinedload
+from database.models import WorkTime
 from .schemas import WorkTimeCreated
 
 
@@ -13,7 +13,7 @@ def check_worktime_exists_by_id(worktime_id, db):
     query = select(WorkTime).where(
         WorkTime.id == worktime_id
     ).options(
-        selectinload(WorkTime.employee)
+        joinedload(WorkTime.employee)
     )
     result = db.execute(query)
     worktime_instance = result.scalars().first()
@@ -64,7 +64,7 @@ def worktime_create(db, worktime):
 
 def get_list_worktimes(db):
     query = select(WorkTime).options(
-        selectinload(WorkTime.employee)
+        joinedload(WorkTime.employee)
     )
     result = db.execute(query)
     return result.scalars().all()
