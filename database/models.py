@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 from sqlalchemy import ForeignKey, String, Date, Boolean, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.engine import Base
@@ -19,7 +20,11 @@ class Employee(Base):
     passport_issued_day: Mapped[date] = mapped_column(Date)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    department_id: Mapped[int] = mapped_column(ForeignKey("departments.id", ondelete="SET NULL"), nullable=True)
+    department_id: Mapped[int] = mapped_column(ForeignKey(
+        "departments.id",
+        ondelete="SET NULL"),
+        nullable=True
+    )
     position_id: Mapped[int] = mapped_column(ForeignKey("positions.id"), nullable=False)
 
     department: Mapped["Department"] = relationship(
@@ -30,6 +35,19 @@ class Employee(Base):
     position: Mapped["Position"] = relationship(
         "Position",
         back_populates="employees"
+    )
+    work_times: Mapped[list["WorkTime"]] = relationship(
+        back_populates="employee",
+        cascade="all,delete-orphan"
+    )
+    vacations: Mapped[list["Vacation"]] = relationship(
+        back_populates="employee",
+        cascade="all,delete-orphan"
+
+    )
+    payrolls: Mapped[list["Payroll"]] = relationship(
+        back_populates="employee",
+        cascade="all,delete-orphan"
     )
 
 
@@ -70,3 +88,53 @@ class Position(Base):
         "Employee",
         back_populates="position"
     )
+
+
+class WorkTime(Base):
+    __tablename__ = "worktimes"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    employee_id: Mapped[int] = mapped_column(ForeignKey("employees.id"), nullable=False)
+    work_date: Mapped[date] = mapped_column(Date, nullable=False)
+    hours_worked: Mapped[int] = mapped_column(default=0)
+    is_weekend: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_holiday: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    employee: Mapped[Employee] = relationship(back_populates="work_times")
+
+
+class Vacation(Base):
+    __tablename__ = "vacations"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    employee_id: Mapped[int] = mapped_column(ForeignKey("employees.id"), nullable=False)
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date] = mapped_column(Date, nullable=False)
+    total_days: Mapped[int] = mapped_column(nullable=False)
+    amount: Mapped[Decimal] = mapped_column(nullable=False)
+
+    employee: Mapped[Employee] = relationship(back_populates="vacations")
+
+
+class Payroll(Base):
+    __tablename__ = "payrolls"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    employee_id: Mapped[int] = mapped_column(ForeignKey("employees.id"), nullable=False)
+    start_period: Mapped[date] = mapped_column(Date, nullable=False)
+    end_period: Mapped[date] = mapped_column(Date, nullable=False)
+    base_salary: Mapped[Decimal] = mapped_column(nullable=False)
+    overtime_salary: Mapped[Decimal] = mapped_column(
+        nullable=False,
+        default=Decimal("0.0")
+    )
+    holiday_salary: Mapped[Decimal] = mapped_column(
+        nullable=False,
+        default=Decimal("0.0")
+    )
+    gross_salary: Mapped[Decimal] = mapped_column(nullable=False)
+    net_salary: Mapped[Decimal] = mapped_column(nullable=False)
+    tax: Mapped[Decimal] = mapped_column(nullable=False)
+    penalty: Mapped[Decimal] = mapped_column(default=Decimal("0.0"))
+
+    employee: Mapped[Employee] = relationship(back_populates="payrolls")
