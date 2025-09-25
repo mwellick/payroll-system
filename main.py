@@ -3,6 +3,7 @@ from department.routers import departments_router
 from position.routers import positions_router
 from employee.routers import employee_router
 from worktime.routers import worktimes_router
+from vacation.routers import vacations_router
 
 app = FastAPI(title="Salary System API")
 
@@ -10,3 +11,4 @@ app.include_router(departments_router)
 app.include_router(positions_router)
 app.include_router(employee_router)
 app.include_router(worktimes_router)
+app.include_router(vacations_router)
