@@ -46,4 +46,3 @@ def delete_employee(
         employee_id: int = Path(..., gt=0),
 ):
     employee_delete(employee_id, db)
-    return

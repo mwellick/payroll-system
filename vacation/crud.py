@@ -6,7 +6,6 @@ from database.models import Vacation, Employee
 from .schemas import VacationCreated
 
 
-
 # TODO: implement calculate_vacation_amount()
 #  function which will generate amount for specific vacation
 #  - calculate S = M / (365 - C) * N
@@ -128,5 +127,3 @@ def vacation_delete(vacation_id, db):
 
     db.delete(vacation_instance)
     db.commit()
-
-    return

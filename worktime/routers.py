@@ -44,4 +44,3 @@ def delete_worktime(
         worktime_id: int = Path(..., gt=0)
 ):
     worktime_delete(worktime_id, db)
-    return

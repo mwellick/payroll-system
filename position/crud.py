@@ -62,5 +62,3 @@ def position_delete(position_id, db):
 
     db.delete(position_instance)
     db.commit()
-
-    return

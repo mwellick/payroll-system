@@ -40,4 +40,3 @@ def delete_department(
         department_id: int = Path(..., gt=0),
 ):
     department_delete(department_id, db)
-    return

@@ -87,10 +87,9 @@ def worktime_update(worktime_id, db, worktime):
                    f"was updated successfully"
     }
 
+
 def worktime_delete(worktime_id, db):
     worktime_instance = check_worktime_exists_by_id(worktime_id, db)
 
     db.delete(worktime_instance)
     db.commit()
-
-    return

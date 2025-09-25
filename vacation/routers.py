@@ -44,4 +44,3 @@ def delete_vacation(
         vacation_id: int = Path(..., gt=0)
 ):
     vacation_delete(vacation_id, db)
-    return

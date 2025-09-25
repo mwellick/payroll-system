@@ -86,5 +86,3 @@ def employee_delete(employee_id, db):
 
     db.delete(employee_instance)
     db.commit()
-
-    return

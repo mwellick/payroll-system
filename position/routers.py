@@ -40,4 +40,3 @@ def delete_position(
         position_id: int = Path(..., gt=0),
 ):
     position_delete(position_id, db)
-    return

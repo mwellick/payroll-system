@@ -62,5 +62,3 @@ def department_delete(department_id, db):
 
     db.delete(department_instance)
     db.commit()
-
-    return
