@@ -9,7 +9,7 @@ from .schemas import EmployeeCreated
 
 def check_employee_exists(employee_id, db):
     """
-    This function checks if specific position exists
+    This function checks if specific employee exists
     """
 
     query = select(Employee).where(
