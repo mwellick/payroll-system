@@ -1,6 +1,8 @@
+from decimal import Decimal
+from datetime import timedelta
 from fastapi import HTTPException
 from starlette import status
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 from database.models import Payroll, Employee
 from .helpers import check_min_wage, calculate_payroll_amounts
@@ -81,3 +83,17 @@ def payroll_delete(payroll_id, db):
 
     db.delete(payroll_instance)
     db.commit()
+
+
+def get_total_year_earnings(db, employee_id, vacation_start):
+    year_ago = vacation_start - timedelta(days=365)
+
+    query = (
+        select(func.sum(Payroll.gross_salary))
+        .where(Payroll.employee_id == employee_id)
+        .where(Payroll.end_period >= year_ago)
+        .where(Payroll.end_period <= vacation_start)
+    )
+    result = db.execute(query)
+    total = result.scalars().one_or_none()
+    return total or Decimal("0.0")
