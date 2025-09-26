@@ -72,7 +72,7 @@ def check_vacation_limit(vacation, db):
     num_vacations = vacations_res.scalar_one()
 
     allowed_vacations = max(1, int(total_employees * 0.15))
-    if (num_vacations + 1) / allowed_vacations:
+    if (num_vacations + 1) > allowed_vacations:
         raise HTTPException(
             detail="There are more than 15% of department employees in a vacation",
             status_code=status.HTTP_400_BAD_REQUEST
