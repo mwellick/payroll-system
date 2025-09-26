@@ -138,3 +138,22 @@ class Payroll(Base):
     penalty: Mapped[Decimal] = mapped_column(default=Decimal("0.0"))
 
     employee: Mapped[Employee] = relationship(back_populates="payrolls")
+    salary_payment: Mapped["SalaryPayment"] = relationship(
+        "SalaryPayment",
+        uselist=False,
+        back_populates="payroll"
+    )
+
+
+class SalaryPayment(Base):
+    __tablename__ = "salary_payments"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    payroll_id: Mapped[int] = mapped_column(ForeignKey("payrolls.id"), nullable=False)
+    payment_date: Mapped[date] = mapped_column(Date, nullable=False)
+    amount_paid: Mapped[Decimal] = mapped_column(default=Decimal("8000.00"))
+
+    payroll: Mapped[Payroll] = relationship(
+        "Payroll",
+        back_populates="salary_payment"
+    )
