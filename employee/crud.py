@@ -2,16 +2,29 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import selectinload,joinedload
+from sqlalchemy.orm import selectinload, joinedload
 from database.models import Employee
 from .schemas import EmployeeCreated
+
+
+def check_employee_by_passport(db, passport_id, is_active):
+    query = select(Employee).where(
+        Employee.passport_id == passport_id,
+        Employee.is_active == is_active
+    )
+    result = db.execute(query)
+    exists = result.scalar_one_or_none()
+    if exists:
+        raise HTTPException(
+            detail="Active employee  already works in another department",
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
 
 
 def check_employee_exists(employee_id, db):
     """
     This function checks if specific employee exists
     """
-
     query = select(Employee).where(
         Employee.id == employee_id
     ).options(
@@ -30,6 +43,8 @@ def check_employee_exists(employee_id, db):
 
 
 def employee_create(db, employee):
+    check_employee_by_passport(db, employee.passport_id, employee.is_active)
+
     employee_instance = Employee(
         tab_number=employee.tab_number,
         first_name=employee.first_name,
