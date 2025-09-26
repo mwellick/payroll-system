@@ -7,12 +7,12 @@ class VacationCreate(BaseModel):
     employee_id: int = Field(gt=0)
     start_date: date
     end_date: date
-    total_days: int = Field(gt=0)
-    amount: Decimal = Field(gt=0)
 
 
 class VacationCreated(VacationCreate):
     id: int
+    amount: Decimal
+    total_days: int
 
     class Config:
         from_attributes = True
