@@ -3,7 +3,9 @@ from starlette import status
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 from database.models import Vacation, Employee
+from payroll.crud import get_total_year_earnings
 from .schemas import VacationCreated
+from .helpers import calculate_vacation_amount
 
 
 # TODO: implement calculate_vacation_amount()
@@ -82,12 +84,26 @@ def check_vacation_limit(vacation, db):
 def vacation_create(db, vacation):
     check_vacation_limit(vacation, db)
 
+    total_earnings = get_total_year_earnings(
+        db,
+        vacation.employee_id,
+        vacation.start_date
+    )
+
+    amount = calculate_vacation_amount(
+        total_earnings,
+        vacation.start_date,
+        vacation.end_date
+    )
+
+    total_days = (vacation.end_date - vacation.start_date).days
+
     vacation_instance = Vacation(
         employee_id=vacation.employee_id,
         start_date=vacation.start_date,
         end_date=vacation.end_date,
-        total_days=vacation.total_days,
-        amount=vacation.amount
+        total_days=total_days,
+        amount=amount
     )
     db.add(vacation_instance)
     db.commit()
