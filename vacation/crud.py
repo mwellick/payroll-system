@@ -8,14 +8,6 @@ from .schemas import VacationCreated
 from .helpers import calculate_vacation_amount
 
 
-# TODO: implement calculate_vacation_amount()
-#  function which will generate amount for specific vacation
-#  - calculate S = M / (365 - C) * N
-#  - M: total salary of employee in last 12 months
-#  - C: number of holidays
-#  - N: vacation duration in calendar days
-#  - set vacation.amount = S
-
 def check_vacation_exists(vacation_id, db):
     """
     This function checks if specific vacation exists

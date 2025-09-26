@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload,joinedload
 from database.models import Employee
 from .schemas import EmployeeCreated
 
@@ -15,8 +15,8 @@ def check_employee_exists(employee_id, db):
     query = select(Employee).where(
         Employee.id == employee_id
     ).options(
-        selectinload(Employee.department),
-        selectinload(Employee.position)
+        joinedload(Employee.department),
+        joinedload(Employee.position)
     )
     result = db.execute(query)
     employee_instance = result.scalars().first()

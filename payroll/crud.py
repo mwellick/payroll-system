@@ -31,11 +31,10 @@ def check_payroll_exists(payroll_id, db):
 
 def payroll_create(db, payroll):
     check_min_wage(payroll.base_salary)
-    gross_salary, tax, net_salary, penalty = calculate_payroll_amounts(
+    gross_salary, tax, net_salary = calculate_payroll_amounts(
         payroll.base_salary,
         payroll.overtime_salary,
         payroll.holiday_salary,
-        payroll.end_period
     )
 
     query = select(Employee).where(
@@ -60,7 +59,6 @@ def payroll_create(db, payroll):
         gross_salary=gross_salary,
         net_salary=net_salary,
         tax=tax,
-        penalty=penalty
     )
     db.add(payroll_instance)
     db.commit()

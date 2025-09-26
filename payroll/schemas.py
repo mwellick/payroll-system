@@ -17,7 +17,6 @@ class PayrollCreated(PayrollCreate):
     gross_salary: Decimal
     net_salary: Decimal
     tax: Decimal = Decimal("0.2")
-    penalty: Decimal = Decimal("0.0")
 
     class Config:
         from_attributes = True
