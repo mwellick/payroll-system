@@ -135,7 +135,6 @@ class Payroll(Base):
     gross_salary: Mapped[Decimal] = mapped_column(nullable=False)
     net_salary: Mapped[Decimal] = mapped_column(nullable=False)
     tax: Mapped[Decimal] = mapped_column(nullable=False)
-    penalty: Mapped[Decimal] = mapped_column(default=Decimal("0.0"))
 
     employee: Mapped[Employee] = relationship(back_populates="payrolls")
     salary_payment: Mapped["SalaryPayment"] = relationship(
@@ -157,3 +156,4 @@ class SalaryPayment(Base):
         "Payroll",
         back_populates="salary_payment"
     )
+    penalty: Mapped[Decimal] = mapped_column(default=Decimal("0.0"))
