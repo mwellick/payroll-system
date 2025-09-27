@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from employee.schemas import EmployeeList
 
 
 class DepartmentCreate(BaseModel):
@@ -15,6 +16,13 @@ class DepartmentCreated(DepartmentCreate):
 
 
 class DepartmentList(DepartmentCreated):
+    class Config:
+        from_attributes = True
+
+
+class DepartmentRetrieve(DepartmentCreate):
+    employees: list[EmployeeList] = []
+
     class Config:
         from_attributes = True
 

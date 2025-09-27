@@ -5,6 +5,7 @@ from .schemas import DepartmentCreate, DepartmentList, DepartmentUpdate
 from .crud import (
     department_create,
     get_list_departments,
+    department_retrieve,
     department_update,
     department_delete
 )
@@ -22,6 +23,12 @@ def create_department(db: db_dependency, department: DepartmentCreate):
 def list_departments(db: db_dependency):
     departments = get_list_departments(db)
     return departments
+
+
+@departments_router.get("/{department_id}/", status_code=status.HTTP_200_OK)
+def retrieve_department(db: db_dependency, department_id: int = Path(..., gt=0)):
+    department_instance = department_retrieve(department_id, db)
+    return department_instance
 
 
 @departments_router.patch("/{department_id}/update", status_code=status.HTTP_200_OK)

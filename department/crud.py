@@ -1,16 +1,19 @@
 from fastapi import HTTPException
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from starlette import status
 from database.models import Department
-from .schemas import DepartmentCreated
+from .schemas import DepartmentCreated, DepartmentRetrieve
 
 
 def check_department_exists(department_id, db):
     """
     This function checks if specific department exists
     """
-    query = select(Department).filter(
-        Department.id == department_id)
+    query = select(Department).where(
+        Department.id == department_id).options(
+        selectinload(Department.employees)
+    )
 
     result = db.execute(query)
 
@@ -41,6 +44,11 @@ def get_list_departments(db):
     query = select(Department).order_by(Department.id)
     result = db.execute(query)
     return result.scalars().all()
+
+
+def department_retrieve(department_id, db):
+    department_instance = check_department_exists(department_id, db)
+    return DepartmentRetrieve.model_validate(department_instance)
 
 
 def department_update(department_id, db, department):
