@@ -1,5 +1,17 @@
 from datetime import date
 from pydantic import BaseModel, Field
+from department.schemas import DepartmentList
+from position.schemas import PositionList
+from payroll.schemas import PayrollList
+
+
+class EmployeeBase(BaseModel):
+    first_name: str
+    last_name: str
+    middle_name: str
+    is_active: bool
+    department_id: int
+    position_id: int
 
 
 class EmployeeCreate(BaseModel):
@@ -24,7 +36,28 @@ class EmployeeCreated(EmployeeCreate):
         from_attributes = True
 
 
-class EmployeeList(EmployeeCreated):
+class EmployeeList(EmployeeBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class EmployeeRetrieve(BaseModel):
+    first_name: str
+    last_name: str
+    middle_name: str
+    tab_number: int = Field(gt=0)
+    birth_date: date = Field(le=date.today())
+    address: str
+    passport_id: str
+    passport_issued_by: str
+    passport_issued_day: date
+    is_active: bool = True
+    department: "DepartmentList"
+    position: "PositionList"
+    payrolls: list[PayrollList] = []
+
     class Config:
         from_attributes = True
 

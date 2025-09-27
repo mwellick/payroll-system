@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Path
 from starlette import status
 from dependencies import db_dependency
+from employee.schemas import EmployeeRetrieve
 from .schemas import DepartmentCreate, DepartmentList, DepartmentUpdate
 from .crud import (
     department_create,
@@ -9,6 +10,8 @@ from .crud import (
     department_update,
     department_delete
 )
+
+EmployeeRetrieve.model_rebuild() # Updating schema after forward reference
 
 departments_router = APIRouter(prefix="/departments", tags=["departments"])
 

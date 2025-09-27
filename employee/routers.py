@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Path
 from starlette import status
 from dependencies import db_dependency
+from department.schemas import DepartmentRetrieve
 from .schemas import (
     EmployeeCreate,
     EmployeeList,
@@ -9,12 +10,14 @@ from .schemas import (
 from .crud import (
     employee_create,
     get_list_employees,
+    employee_retrieve,
     employee_update,
     employee_delete
 )
 
-# TODO: 1) Add pagination in Employees list, 2 Add Employee detail endpoint with nested position/department schemas
+# TODO: 1) Add pagination in Employees list
 
+DepartmentRetrieve.model_rebuild() # Updating schema after forward reference
 employee_router = APIRouter(prefix="/employees", tags=["employees"])
 
 
@@ -28,6 +31,12 @@ def create_employee(db: db_dependency, employee: EmployeeCreate):
 def list_employees(db: db_dependency):
     employees = get_list_employees(db)
     return employees
+
+
+@employee_router.get("/{employee_id}/", status_code=status.HTTP_200_OK)
+def retrieve_employee(db: db_dependency, employee_id: int = Path(..., gt=0)):
+    employee_instance = employee_retrieve(employee_id, db)
+    return employee_instance
 
 
 @employee_router.patch("/{employee_id}/update", status_code=status.HTTP_200_OK)

@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload, joinedload
 from database.models import Employee
-from .schemas import EmployeeCreated
+from .schemas import EmployeeCreated, EmployeeRetrieve
 
 
 def check_employee_by_passport(db, passport_id, is_active):
@@ -29,7 +29,9 @@ def check_employee_exists(employee_id, db):
         Employee.id == employee_id
     ).options(
         joinedload(Employee.department),
-        joinedload(Employee.position)
+        joinedload(Employee.position),
+        selectinload(Employee.payrolls),
+
     )
     result = db.execute(query)
     employee_instance = result.scalars().first()
@@ -80,6 +82,11 @@ def get_list_employees(db):
     )
     result = db.execute(query)
     return result.scalars().all()
+
+
+def employee_retrieve(employee_id, db):
+    employee_instance = check_employee_exists(employee_id, db)
+    return EmployeeRetrieve.model_validate(employee_instance)
 
 
 def employee_update(employee_id, db, employee):
