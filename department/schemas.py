@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
-if TYPE_CHECKING: # Solution to avoid circular import
+if TYPE_CHECKING:  # Solution to avoid circular import
     from employee.schemas import EmployeeList
 
 
@@ -14,20 +14,17 @@ class DepartmentCreate(BaseModel):
 class DepartmentCreated(DepartmentCreate):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DepartmentList(DepartmentCreated):
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DepartmentRetrieve(DepartmentCreate):
     employees: list["EmployeeList"] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DepartmentUpdate(BaseModel):

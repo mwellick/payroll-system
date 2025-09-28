@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from department.schemas import DepartmentList
 from position.schemas import PositionList
 from payroll.schemas import PayrollList
@@ -32,15 +32,13 @@ class EmployeeCreate(BaseModel):
 class EmployeeCreated(EmployeeCreate):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EmployeeList(EmployeeBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EmployeeRetrieve(BaseModel):
@@ -58,8 +56,7 @@ class EmployeeRetrieve(BaseModel):
     position: "PositionList"
     payrolls: list[PayrollList] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EmployeeUpdate(BaseModel):

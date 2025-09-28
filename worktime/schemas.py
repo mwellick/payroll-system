@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class WorkTimeCreate(BaseModel):
@@ -13,13 +13,11 @@ class WorkTimeCreate(BaseModel):
 class WorkTimeCreated(WorkTimeCreate):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class WorkTimeList(WorkTimeCreate):
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class WorkTimeUpdate(BaseModel):

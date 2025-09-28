@@ -1,6 +1,6 @@
 from datetime import date
 from decimal import Decimal
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class DepartmentEmployee(BaseModel):
@@ -23,5 +23,4 @@ class DepartmentPayrollReportCreated(BaseModel):
     total_net: Decimal
     total_tax: Decimal
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

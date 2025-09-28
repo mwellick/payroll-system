@@ -1,6 +1,6 @@
 from decimal import Decimal
 from datetime import date
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class SalaryPaymentCreate(BaseModel):
@@ -13,10 +13,8 @@ class SalaryPaymentCreated(SalaryPaymentCreate):
     amount_paid: Decimal
     penalty: Decimal
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SalaryPaymentList(SalaryPaymentCreated):
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class PositionCreate(BaseModel):
@@ -9,13 +9,11 @@ class PositionCreate(BaseModel):
 class PositionCreated(PositionCreate):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PositionList(PositionCreated):
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PositionUpdate(BaseModel):

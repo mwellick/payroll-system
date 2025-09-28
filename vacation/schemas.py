@@ -1,6 +1,6 @@
 from datetime import date
 from decimal import Decimal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class VacationCreate(BaseModel):
@@ -14,13 +14,11 @@ class VacationCreated(VacationCreate):
     amount: Decimal
     total_days: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class VacationList(VacationCreated):
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class VacationUpdate(BaseModel):
