@@ -16,12 +16,7 @@ class DepartmentEmployee(BaseModel):
     tax: Decimal
 
 
-class DepartmentPayrollCreate(BaseModel):
-    start_date: date
-    end_date: date
-
-
-class DepartmentPayrollCreated(BaseModel):
+class DepartmentPayrollReportCreated(BaseModel):
     department_name: str
     employees: list[DepartmentEmployee]
     total_gross: Decimal

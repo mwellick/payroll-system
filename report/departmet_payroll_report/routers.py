@@ -2,16 +2,19 @@ from datetime import date
 from fastapi import APIRouter, Path, Query
 from starlette import status
 from dependencies import db_dependency
-from .schemas import DepartmentPayrollCreate, DepartmentPayrollCreated
+from .schemas import DepartmentPayrollReportCreated
 from .crud import department_payroll_report_create
 
-department_payroll_router = APIRouter(prefix="/department_payrolls")
+department_payroll_router = APIRouter(
+    prefix="/department_payrolls",
+    tags=["department_salary_payments_report"]
+)
 
 
 @department_payroll_router.get(
     "/{department_id}/",
     status_code=status.HTTP_200_OK,
-    response_model=DepartmentPayrollCreated
+    response_model=DepartmentPayrollReportCreated
 )
 def get_department_payroll_report(
         db: db_dependency,
@@ -20,5 +23,10 @@ def get_department_payroll_report(
         end_date: date = Query(...),
 
 ):
-    department_payroll = department_payroll_report_create(db, department_id, start_date, end_date)
+    department_payroll = department_payroll_report_create(
+        db,
+        department_id,
+        start_date,
+        end_date
+    )
     return department_payroll

@@ -1,9 +1,9 @@
-from sqlalchemy import select
 from decimal import Decimal
+from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from database.models import Employee
 from department.crud import check_department_exists
-from .schemas import DepartmentEmployee, DepartmentPayrollCreated
+from .schemas import DepartmentEmployee, DepartmentPayrollReportCreated
 
 
 def department_payroll_report_create(db, department_id, start_date, end_date):
@@ -47,7 +47,7 @@ def department_payroll_report_create(db, department_id, start_date, end_date):
                 total_net += payroll.net_salary
                 total_tax += payroll.tax
 
-    return DepartmentPayrollCreated(
+    return DepartmentPayrollReportCreated(
         department_name=department.name,
         employees=department_employees,
         total_gross=total_gross,
