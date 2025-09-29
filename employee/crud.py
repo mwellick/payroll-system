@@ -31,6 +31,7 @@ def check_employee_exists(employee_id, db):
         joinedload(Employee.department),
         joinedload(Employee.position),
         selectinload(Employee.payrolls),
+        selectinload(Employee.work_times)
 
     )
     result = db.execute(query)
