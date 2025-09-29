@@ -28,13 +28,12 @@ def department_salary_payment_report_create(db, department_id, start_date, end_d
     for employee in employees:
         for payroll in employee.payrolls:
             salary_payment = payroll.salary_payment
-            if salary_payment and start_date <= salary_payment.payment_date <= end_date:
-                full_name = (f"{employee.first_name} {employee.last_name} "
-                             f"{employee.middle_name}").strip()
+            if (salary_payment and
+                    start_date <= salary_payment.payment_date <= end_date):
 
                 department_employees.append(
                     SalaryPaymentEmployee(
-                        full_name=full_name,
+                        full_name=employee.full_name,
                         tab_number=employee.tab_number,
                         payment_date=salary_payment.payment_date,
                         amount_paid=salary_payment.amount_paid,

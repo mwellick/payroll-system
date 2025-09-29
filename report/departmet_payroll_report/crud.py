@@ -26,14 +26,11 @@ def department_payroll_report_create(db, department_id, start_date, end_date):
         for payroll in employee.payrolls:
             if (payroll.start_period <= end_date and
                     payroll.end_period >= start_date):
-                full_name = (f"{employee.first_name} {employee.last_name} "
-                             f"{employee.middle_name}").strip()
-
                 department_employees.append(
                     DepartmentEmployee(
                         start_period=payroll.start_period,
                         end_period=payroll.end_period,
-                        full_name=full_name,
+                        full_name=employee.full_name,
                         tab_number=employee.tab_number,
                         base_salary=payroll.base_salary,
                         overtime_salary=payroll.overtime_salary,

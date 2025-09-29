@@ -50,6 +50,10 @@ class Employee(Base):
         cascade="all,delete-orphan"
     )
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name} {self.middle_name}".strip()
+
 
 class Department(Base):
     __tablename__ = "departments"
