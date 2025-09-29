@@ -9,6 +9,7 @@ from salary_payment.routers import salary_payment_router
 from report.departmet_payroll_report.routers import department_payroll_router
 from report.department_salary_payment_report.routers import department_salary_payment_router
 from report.employee_worktime_report.routers import employee_worktime_router
+from report.department_debt_report.routers import department_debt_router
 
 app = FastAPI(title="Salary System API")
 
@@ -22,3 +23,4 @@ app.include_router(salary_payment_router)
 app.include_router(department_payroll_router)
 app.include_router(department_salary_payment_router)
 app.include_router(employee_worktime_router)
+app.include_router(department_debt_router)
