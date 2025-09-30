@@ -1,14 +1,9 @@
-import os
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from core.config import settings
 
-load_dotenv()
-
-POSTGRESQL_URL = os.environ.get("DATABASE_URL")
-
-engine = create_engine(POSTGRESQL_URL, echo=True)
+engine = create_engine(settings.database_url, echo=True)
 
 SessionLocal = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 
