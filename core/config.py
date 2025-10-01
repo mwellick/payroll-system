@@ -4,7 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_name: str = "Payroll  System API"
-    database_url: str = None
+    database_url: str
+    debug: bool = False
 
     model_config = SettingsConfigDict(env_file=".env")
 
