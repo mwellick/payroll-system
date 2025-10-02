@@ -2,11 +2,17 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from starlette import status
+from dependencies import db_dependency
 from database.models import Department
-from .schemas import DepartmentCreated, DepartmentRetrieve
+from .schemas import (
+    DepartmentCreate,
+    DepartmentCreated,
+    DepartmentUpdate,
+    DepartmentRetrieve
+)
 
 
-def check_department_exists(department_id, db):
+def check_department_exists(department_id: int, db: db_dependency):
     """
     This function checks if specific department exists
     """
@@ -27,7 +33,7 @@ def check_department_exists(department_id, db):
     return department_instance
 
 
-def department_create(db, department):
+def department_create(db: db_dependency, department: DepartmentCreate):
     department_instance = Department(
         name=department.name,
         code=department.code,
@@ -40,18 +46,18 @@ def department_create(db, department):
     return DepartmentCreated.model_validate(department_instance)
 
 
-def get_list_departments(db):
+def get_list_departments(db: db_dependency):
     query = select(Department).order_by(Department.id)
     result = db.execute(query)
     return result.scalars().all()
 
 
-def department_retrieve(department_id, db):
+def department_retrieve(department_id: int, db: db_dependency):
     department_instance = check_department_exists(department_id, db)
     return DepartmentRetrieve.model_validate(department_instance)
 
 
-def department_update(department_id, db, department):
+def department_update(department_id: int, db: db_dependency, department: DepartmentUpdate):
     department_instance = check_department_exists(department_id, db)
 
     update_data = department.model_dump(exclude_unset=True)
@@ -65,7 +71,7 @@ def department_update(department_id, db, department):
     return {"message": f"{department_instance.name} was updated successfully"}
 
 
-def department_delete(department_id, db):
+def department_delete(department_id: int, db: db_dependency):
     department_instance = check_department_exists(department_id, db)
 
     db.delete(department_instance)

@@ -1,11 +1,16 @@
 from fastapi import HTTPException
 from sqlalchemy import select
 from starlette import status
+from dependencies import db_dependency
 from database.models import Position
-from .schemas import PositionCreated
+from .schemas import (
+    PositionCreate,
+    PositionCreated,
+    PositionUpdate
+)
 
 
-def check_position_exists(position_id, db):
+def check_position_exists(position_id: int, db: db_dependency):
     """
     This function checks if specific position exists
     """
@@ -24,7 +29,7 @@ def check_position_exists(position_id, db):
     return position_instance
 
 
-def position_create(db, position):
+def position_create(db: db_dependency, position: PositionCreate):
     position_instance = Position(
         name=position.name,
         hourly_rate=position.hourly_rate
@@ -36,14 +41,14 @@ def position_create(db, position):
     return PositionCreated.model_validate(position_instance)
 
 
-def get_list_positions(db):
+def get_list_positions(db: db_dependency):
     query = select(Position).order_by(
         Position.id)
     result = db.execute(query)
     return result.scalars().all()
 
 
-def position_update(position_id, db, position):
+def position_update(position_id: int, db: db_dependency, position: PositionUpdate):
     position_instance = check_position_exists(position_id, db)
 
     update_data = position.model_dump(exclude_unset=True)
@@ -57,7 +62,7 @@ def position_update(position_id, db, position):
     return {"message": f"{position_instance.name} was updated successfully"}
 
 
-def position_delete(position_id, db):
+def position_delete(position_id: int, db: db_dependency):
     position_instance = check_position_exists(position_id, db)
 
     db.delete(position_instance)

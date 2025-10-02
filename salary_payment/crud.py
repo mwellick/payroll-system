@@ -2,13 +2,14 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
+from dependencies import db_dependency
 from database.models import SalaryPayment, Payroll
 from payroll.crud import check_payroll_exists
 from .helpers import calculate_penalty
-from .schemas import SalaryPaymentCreated
+from .schemas import SalaryPaymentCreate, SalaryPaymentCreated
 
 
-def check_salary_payment_exists(salary_payment_id, db):
+def check_salary_payment_exists(salary_payment_id: int, db: db_dependency):
     """
     This function checks if specific salary payment exists
     """
@@ -26,7 +27,7 @@ def check_salary_payment_exists(salary_payment_id, db):
     return salary_payment_instance
 
 
-def salary_payment_create(db, salary_payment):
+def salary_payment_create(db: db_dependency, salary_payment: SalaryPaymentCreate):
     query = select(Payroll).where(
         Payroll.id == salary_payment.payroll_id
     )
@@ -56,7 +57,7 @@ def salary_payment_create(db, salary_payment):
     return SalaryPaymentCreated.model_validate(payment_instance)
 
 
-def get_salary_payments_list(db):
+def get_salary_payments_list(db: db_dependency):
     query = select(SalaryPayment).options(
         joinedload(SalaryPayment.payroll)
     )
@@ -64,7 +65,7 @@ def get_salary_payments_list(db):
     return result.scalars().all()
 
 
-def salary_payment_delete(salary_payment_id, db):
+def salary_payment_delete(salary_payment_id: int, db: db_dependency):
     salary_payment_instance = check_salary_payment_exists(salary_payment_id, db)
 
     db.delete(salary_payment_instance)

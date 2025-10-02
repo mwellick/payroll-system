@@ -2,13 +2,18 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
+from dependencies import db_dependency
 from database.models import Vacation, Employee
 from payroll.crud import get_total_year_earnings
-from .schemas import VacationCreated
+from .schemas import (
+    VacationCreate,
+    VacationCreated,
+    VacationUpdate
+)
 from .helpers import calculate_vacation_amount
 
 
-def check_vacation_exists(vacation_id, db):
+def check_vacation_exists(vacation_id: int, db: db_dependency):
     """
     This function checks if specific vacation exists
     """
@@ -29,7 +34,7 @@ def check_vacation_exists(vacation_id, db):
     return vacation_instance
 
 
-def check_vacation_limit(vacation, db):
+def check_vacation_limit(vacation: VacationCreate, db: db_dependency):
     """
     This function checks if employee is able to
     go in vacation and ensure that no more than 15% of department
@@ -73,7 +78,7 @@ def check_vacation_limit(vacation, db):
         )
 
 
-def vacation_create(db, vacation):
+def vacation_create(db: db_dependency, vacation: VacationCreate):
     check_vacation_limit(vacation, db)
 
     total_earnings = get_total_year_earnings(
@@ -104,7 +109,7 @@ def vacation_create(db, vacation):
     return VacationCreated.model_validate(vacation_instance)
 
 
-def get_list_vacations(db):
+def get_list_vacations(db: db_dependency):
     query = select(Vacation).options(
         joinedload(Vacation.employee)
     )
@@ -112,7 +117,7 @@ def get_list_vacations(db):
     return result.scalars().all()
 
 
-def vacation_update(vacation_id, db, vacation):
+def vacation_update(vacation_id: int, db: db_dependency, vacation: VacationUpdate):
     vacation_instance = check_vacation_exists(vacation_id, db)
 
     update_data = vacation.model_dump(exclude_unset=True)
@@ -130,7 +135,7 @@ def vacation_update(vacation_id, db, vacation):
     }
 
 
-def vacation_delete(vacation_id, db):
+def vacation_delete(vacation_id: int, db: db_dependency):
     vacation_instance = check_vacation_exists(vacation_id, db)
 
     db.delete(vacation_instance)

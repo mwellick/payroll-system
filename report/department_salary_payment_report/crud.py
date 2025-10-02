@@ -1,6 +1,8 @@
 from decimal import Decimal
+from datetime import date
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from dependencies import db_dependency
 from database.models import Employee, Payroll
 from department.crud import check_department_exists
 from .schemas import (
@@ -9,7 +11,12 @@ from .schemas import (
 )
 
 
-def department_salary_payment_report_create(db, department_id, start_date, end_date):
+def department_salary_payment_report_create(
+        db: db_dependency,
+        department_id: int,
+        start_date: date,
+        end_date: date
+):
     department = check_department_exists(department_id, db)
 
     query = select(Employee).where(
@@ -30,7 +37,6 @@ def department_salary_payment_report_create(db, department_id, start_date, end_d
             salary_payment = payroll.salary_payment
             if (salary_payment and
                     start_date <= salary_payment.payment_date <= end_date):
-
                 department_employees.append(
                     SalaryPaymentEmployee(
                         full_name=employee.full_name,

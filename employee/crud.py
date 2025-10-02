@@ -3,11 +3,17 @@ from starlette import status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload, joinedload
+from dependencies import db_dependency
 from database.models import Employee
-from .schemas import EmployeeCreated, EmployeeRetrieve
+from .schemas import (
+    EmployeeCreate,
+    EmployeeCreated,
+    EmployeeRetrieve,
+    EmployeeUpdate
+)
 
 
-def check_employee_by_passport(db, passport_id, is_active):
+def check_employee_by_passport(db: db_dependency, passport_id: str, is_active: bool):
     query = select(Employee).where(
         Employee.passport_id == passport_id,
         Employee.is_active == is_active
@@ -21,7 +27,7 @@ def check_employee_by_passport(db, passport_id, is_active):
         )
 
 
-def check_employee_exists(employee_id, db):
+def check_employee_exists(employee_id: int, db: db_dependency):
     """
     This function checks if specific employee exists
     """
@@ -45,7 +51,7 @@ def check_employee_exists(employee_id, db):
     return employee_instance
 
 
-def employee_create(db, employee):
+def employee_create(db: db_dependency, employee: EmployeeCreate):
     check_employee_by_passport(db, employee.passport_id, employee.is_active)
 
     employee_instance = Employee(
@@ -76,7 +82,7 @@ def employee_create(db, employee):
     return EmployeeCreated.model_validate(employee_instance)
 
 
-def get_list_employees(db):
+def get_list_employees(db: db_dependency):
     query = select(Employee).options(
         selectinload(Employee.department),
         selectinload(Employee.position)
@@ -85,12 +91,12 @@ def get_list_employees(db):
     return result.scalars().all()
 
 
-def employee_retrieve(employee_id, db):
+def employee_retrieve(employee_id: int, db: db_dependency):
     employee_instance = check_employee_exists(employee_id, db)
     return EmployeeRetrieve.model_validate(employee_instance)
 
 
-def employee_update(employee_id, db, employee):
+def employee_update(employee_id: int, db: db_dependency, employee: EmployeeUpdate):
     employee_instance = check_employee_exists(employee_id, db)
 
     update_data = employee.model_dump(exclude_unset=True)

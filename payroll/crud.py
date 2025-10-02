@@ -1,15 +1,16 @@
 from decimal import Decimal
-from datetime import timedelta
+from datetime import timedelta, date
 from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
+from dependencies import db_dependency
 from database.models import Payroll, Employee
 from .helpers import check_min_wage, calculate_payroll_amounts
-from .schemas import PayrollCreated
+from .schemas import PayrollCreate, PayrollCreated
 
 
-def check_payroll_exists(payroll_id, db):
+def check_payroll_exists(payroll_id: int, db: db_dependency):
     """
     This function checks if specific payroll exists
     """
@@ -29,7 +30,7 @@ def check_payroll_exists(payroll_id, db):
     return payroll_instance
 
 
-def payroll_create(db, payroll):
+def payroll_create(db: db_dependency, payroll: PayrollCreate):
     check_min_wage(payroll.base_salary)
     gross_salary, tax, net_salary = calculate_payroll_amounts(
         payroll.base_salary,
@@ -67,7 +68,7 @@ def payroll_create(db, payroll):
     return PayrollCreated.model_validate(payroll_instance)
 
 
-def get_list_payrolls(db):
+def get_list_payrolls(db: db_dependency):
     query = select(Payroll).options(
         joinedload(Payroll.employee)
     )
@@ -76,14 +77,14 @@ def get_list_payrolls(db):
     return result.scalars().all()
 
 
-def payroll_delete(payroll_id, db):
+def payroll_delete(payroll_id: int, db: db_dependency):
     payroll_instance = check_payroll_exists(payroll_id, db)
 
     db.delete(payroll_instance)
     db.commit()
 
 
-def get_total_year_earnings(db, employee_id, vacation_start):
+def get_total_year_earnings(db: db_dependency, employee_id: int, vacation_start: date):
     year_ago = vacation_start - timedelta(days=365)
 
     query = (

@@ -1,8 +1,15 @@
+from datetime import date
+from dependencies import db_dependency
 from employee.crud import check_employee_exists
 from .schemas import EmployeeWorktimeReportCreated
 
 
-def employee_worktime_report_create(db, employee_id, start_date, end_date):
+def employee_worktime_report_create(
+        db: db_dependency,
+        employee_id: int,
+        start_date: date,
+        end_date: date
+):
     employee = check_employee_exists(employee_id, db)
 
     total_hours = 0

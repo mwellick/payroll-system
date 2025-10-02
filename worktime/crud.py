@@ -2,11 +2,12 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
+from dependencies import db_dependency
 from database.models import WorkTime
-from .schemas import WorkTimeCreated
+from .schemas import WorkTimeCreate, WorkTimeCreated, WorkTimeUpdate
 
 
-def check_worktime_exists_by_id(worktime_id, db):
+def check_worktime_exists_by_id(worktime_id: int, db: db_dependency):
     """
     This function checks if specific worktime exists
     """
@@ -26,7 +27,7 @@ def check_worktime_exists_by_id(worktime_id, db):
     return worktime_instance
 
 
-def check_worktime_exists(worktime, db):
+def check_worktime_exists(worktime: WorkTimeCreate, db: db_dependency):
     """
     Check if the employee already has a worktime
     entry for the given date.
@@ -45,7 +46,7 @@ def check_worktime_exists(worktime, db):
         )
 
 
-def worktime_create(db, worktime):
+def worktime_create(db: db_dependency, worktime: WorkTimeCreate):
     check_worktime_exists(worktime, db)
 
     worktime_instance = WorkTime(
@@ -62,7 +63,7 @@ def worktime_create(db, worktime):
     return WorkTimeCreated.model_validate(worktime_instance)
 
 
-def get_list_worktimes(db):
+def get_list_worktimes(db: db_dependency):
     query = select(WorkTime).options(
         joinedload(WorkTime.employee)
     )
@@ -70,7 +71,7 @@ def get_list_worktimes(db):
     return result.scalars().all()
 
 
-def worktime_update(worktime_id, db, worktime):
+def worktime_update(worktime_id: int, db: db_dependency, worktime: WorkTimeUpdate):
     worktime_instance = check_worktime_exists_by_id(worktime_id, db)
 
     update_data = worktime.model_dump(exclude_unset=True)
@@ -88,7 +89,7 @@ def worktime_update(worktime_id, db, worktime):
     }
 
 
-def worktime_delete(worktime_id, db):
+def worktime_delete(worktime_id: int, db: db_dependency):
     worktime_instance = check_worktime_exists_by_id(worktime_id, db)
 
     db.delete(worktime_instance)

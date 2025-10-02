@@ -1,6 +1,6 @@
 from decimal import Decimal
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 from dependencies import db_dependency
 from database.models import Payroll, Employee
 from department.crud import check_department_exists
