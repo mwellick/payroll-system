@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from app.dependencies import db_dependency
 from database.models import WorkTime
@@ -57,7 +58,14 @@ def worktime_create(db: db_dependency, worktime: WorkTimeCreate):
         is_holiday=worktime.is_holiday
     )
     db.add(worktime_instance)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create worktime"
+        )
     db.refresh(worktime_instance)
 
     return WorkTimeCreated.model_validate(worktime_instance)
@@ -79,7 +87,14 @@ def worktime_update(worktime_id: int, db: db_dependency, worktime: WorkTimeUpdat
     for k, v in update_data.items():
         setattr(worktime_instance, k, v)
 
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to update worktime due to integrity constraints"
+        )
     db.refresh(worktime_instance)
 
     return {

@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select, func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from app.dependencies import db_dependency
 from database.models import Vacation, Employee
@@ -103,7 +104,14 @@ def vacation_create(db: db_dependency, vacation: VacationCreate):
         amount=amount
     )
     db.add(vacation_instance)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create vacation"
+        )
     db.refresh(vacation_instance)
 
     return VacationCreated.model_validate(vacation_instance)
@@ -125,7 +133,14 @@ def vacation_update(vacation_id: int, db: db_dependency, vacation: VacationUpdat
     for k, v in update_data.items():
         setattr(vacation_instance, k, v)
 
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to update vacation due to integrity constraints"
+        )
     db.refresh(vacation_instance)
 
     return {

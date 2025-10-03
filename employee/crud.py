@@ -104,7 +104,14 @@ def employee_update(employee_id: int, db: db_dependency, employee: EmployeeUpdat
     for k, v in update_data.items():
         setattr(employee_instance, k, v)
 
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to update employee due to integrity constraints"
+        )
     db.refresh(employee_instance)
 
     return {"message": f"Employee ID: {employee_instance.id} was updated successfully"}

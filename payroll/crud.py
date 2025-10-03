@@ -3,6 +3,7 @@ from datetime import timedelta, date
 from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select, func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from app.dependencies import db_dependency
 from database.models import Payroll, Employee
@@ -62,7 +63,14 @@ def payroll_create(db: db_dependency, payroll: PayrollCreate):
         tax=tax,
     )
     db.add(payroll_instance)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create payroll"
+        )
     db.refresh(payroll_instance)
 
     return PayrollCreated.model_validate(payroll_instance)

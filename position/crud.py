@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy import select
 from starlette import status
+from sqlalchemy.exc import IntegrityError
 from app.dependencies import db_dependency
 from database.models import Position
 from .schemas import (
@@ -35,7 +36,14 @@ def position_create(db: db_dependency, position: PositionCreate):
         hourly_rate=position.hourly_rate
     )
     db.add(position_instance)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create position"
+        )
     db.refresh(position_instance)
 
     return PositionCreated.model_validate(position_instance)
@@ -56,7 +64,14 @@ def position_update(position_id: int, db: db_dependency, position: PositionUpdat
     for k, v in update_data.items():
         setattr(position_instance, k, v)
 
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to update position due to integrity constraints"
+        )
     db.refresh(position_instance)
 
     return {"message": f"{position_instance.name} was updated successfully"}

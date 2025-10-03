@@ -1,7 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from starlette import status
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 from app.dependencies import db_dependency
 from database.models import Department
 from .schemas import (
@@ -34,13 +35,30 @@ def check_department_exists(department_id: int, db: db_dependency):
 
 
 def department_create(db: db_dependency, department: DepartmentCreate):
+    existing = db.execute(select(Department).where(
+        Department.code == department.code)
+    ).scalar_one_or_none()
+
+    if existing:
+        raise HTTPException(
+            detail=f"Department with this code: {department.code} already exists",
+            status_code=status.HTTP_409_CONFLICT
+        )
+
     department_instance = Department(
         name=department.name,
         code=department.code,
         head_id=department.head_id
     )
     db.add(department_instance)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            detail="Failed to create department",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     db.refresh(department_instance)
 
     return DepartmentCreated.model_validate(department_instance)
@@ -65,7 +83,14 @@ def department_update(department_id: int, db: db_dependency, department: Departm
     for k, v in update_data.items():
         setattr(department_instance, k, v)
 
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="Failed to update department due to integrity constraints"
+        )
     db.refresh(department_instance)
 
     return {"message": f"{department_instance.name} was updated successfully"}

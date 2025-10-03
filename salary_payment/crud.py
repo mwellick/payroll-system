@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from app.dependencies import db_dependency
 from database.models import SalaryPayment, Payroll
@@ -51,7 +52,14 @@ def salary_payment_create(db: db_dependency, salary_payment: SalaryPaymentCreate
     )
 
     db.add(payment_instance)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create salary payment"
+        )
     db.refresh(payment_instance)
 
     return SalaryPaymentCreated.model_validate(payment_instance)
