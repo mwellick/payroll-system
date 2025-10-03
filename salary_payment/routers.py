@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path
 from starlette import status
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from .schemas import SalaryPaymentCreate, SalaryPaymentList
 from .crud import (
     salary_payment_create,

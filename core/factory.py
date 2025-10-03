@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from sqlalchemy import text
 
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from department.routers import departments_router
 from position.routers import positions_router
 from employee.routers import employee_router

@@ -2,7 +2,7 @@ from decimal import Decimal
 from datetime import date
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from database.models import Employee, Payroll
 from department.crud import check_department_exists
 from .schemas import (

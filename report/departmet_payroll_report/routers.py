@@ -1,13 +1,13 @@
 from datetime import date
 from fastapi import APIRouter, Path, Query
 from starlette import status
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from .schemas import DepartmentPayrollReportCreated
 from .crud import department_payroll_report_create
 
 department_payroll_router = APIRouter(
     prefix="/department_payrolls",
-    tags=["department_salary_payments_report"]
+    tags=["department_payrolls_report"]
 )
 
 

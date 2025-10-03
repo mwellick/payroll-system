@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from database.models import Payroll, Employee
 from .helpers import check_min_wage, calculate_payroll_amounts
 from .schemas import PayrollCreate, PayrollCreated

@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from database.models import SalaryPayment, Payroll
 from payroll.crud import check_payroll_exists
 from .helpers import calculate_penalty

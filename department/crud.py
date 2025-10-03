@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from starlette import status
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from database.models import Department
 from .schemas import (
     DepartmentCreate,

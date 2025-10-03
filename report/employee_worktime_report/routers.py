@@ -1,7 +1,7 @@
 from datetime import date
 from fastapi import APIRouter, Path, Query
 from starlette import status
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from .schemas import EmployeeWorktimeReportCreated
 from .crud import employee_worktime_report_create
 

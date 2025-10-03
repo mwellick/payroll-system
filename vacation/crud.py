@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from starlette import status
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from database.models import Vacation, Employee
 from payroll.crud import get_total_year_earnings
 from .schemas import (

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Path
 from starlette import status
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from department.schemas import DepartmentRetrieve
 from .schemas import (
     EmployeeCreate,
@@ -15,9 +15,7 @@ from .crud import (
     employee_delete
 )
 
-# TODO: 1) Add pagination in Employees list
-
-DepartmentRetrieve.model_rebuild() # Updating schema after forward reference
+DepartmentRetrieve.model_rebuild()  # Updating schema after forward reference
 employee_router = APIRouter(prefix="/employees", tags=["employees"])
 
 

@@ -1,5 +1,5 @@
 from datetime import date
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from employee.crud import check_employee_exists
 from .schemas import EmployeeWorktimeReportCreated
 

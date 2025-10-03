@@ -3,7 +3,7 @@ from starlette import status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload, joinedload
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from database.models import Employee
 from .schemas import (
     EmployeeCreate,

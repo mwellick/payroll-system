@@ -1,7 +1,7 @@
 from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from dependencies import db_dependency
+from app.dependencies import db_dependency
 from database.models import Payroll, Employee
 from department.crud import check_department_exists
 from .schemas import DepartmentEmployee, DepartmentDebtReport
