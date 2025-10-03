@@ -57,7 +57,8 @@ def create_app():
     app = FastAPI(
         title=settings.app_name,
         version="1.0.0",
-        debug=settings.debug
+        debug=settings.debug,
+        docs_url="/"
     )
 
     setup_system_endpoints(app)
