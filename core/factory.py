@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from sqlalchemy import text
-
+from sqlalchemy.exc import IntegrityError
+from fastapi.exceptions import RequestValidationError
 from app.dependencies import db_dependency
 from department.routers import departments_router
 from position.routers import positions_router
@@ -15,6 +16,11 @@ from report.employee_worktime_report.routers import employee_worktime_router
 from report.department_debt_report.routers import department_debt_router
 
 from .config import settings
+from .exception_handlers import (
+    conflict_exception_handler,
+    validation_exception_handler,
+    internal_server_error_handler
+)
 
 
 def setup_system_endpoints(app: FastAPI):
@@ -60,6 +66,10 @@ def create_app():
         debug=settings.debug,
         docs_url="/"
     )
+
+    app.add_exception_handler(IntegrityError, conflict_exception_handler)
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
+    app.add_exception_handler(Exception, internal_server_error_handler)
 
     setup_system_endpoints(app)
     setup_routers(app)

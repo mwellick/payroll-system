@@ -41,7 +41,7 @@ def department_create(db: db_dependency, department: DepartmentCreate):
 
     if existing:
         raise HTTPException(
-            detail=f"Department with this code: {department.code} already exists",
+            detail=f"Department with  'code: {department.code}' already exists",
             status_code=status.HTTP_409_CONFLICT
         )
 
